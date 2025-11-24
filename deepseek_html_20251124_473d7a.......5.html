@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sexually Transmitted Infections Flashcards</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            height: 95vh;
+            max-height: 95vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z" fill="white"/></svg>');
+        }
+        
+        .header h1 {
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .header .subtitle {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        .progress {
+            background: #cc5500;
+            height: 8px;
+            width: 100%;
+            flex-shrink: 0;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #ff6b6b, #ffa500);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .flashcard {
+            padding: clamp(10px, 3vw, 20px);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+        
+        .question-container {
+            display: flex;
+            gap: clamp(10px, 2vw, 15px);
+            align-items: flex-start;
+            margin-bottom: clamp(10px, 2vw, 15px);
+        }
+        
+        .question-icon {
+            background: #ff6b6b;
+            color: white;
+            width: clamp(35px, 8vw, 50px);
+            height: clamp(35px, 8vw, 50px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+        }
+        
+        .question {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            line-height: 1.6;
+            color: #2c3e50;
+            flex-grow: 1;
+            font-weight: 500;
+        }
+        
+        .multiple-select-indicator {
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(6px, 1.5vw, 10px);
+            margin-bottom: clamp(10px, 2vw, 20px);
+            flex: 1;
+        }
+        
+        .option {
+            padding: clamp(10px, 2vw, 14px) clamp(12px, 2.5vw, 18px);
+            border: 2px solid #ffe0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 10px);
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .option:hover {
+            background: #fff0f0;
+            border-color: #ffb3b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .option-letter {
+            background: #fff0f0;
+            color: #2c3e50;
+            width: clamp(24px, 5vw, 28px);
+            height: clamp(24px, 5vw, 28px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            font-size: clamp(0.75rem, 1.8vw, 0.9rem);
+        }
+        
+        /* CORRECT - ALWAYS GREEN */
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.correct .option-letter {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* INCORRECT - ALWAYS RED */
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .option.incorrect .option-letter {
+            background: #dc3545;
+            color: white;
+        }
+        
+        /* Remove the selected class to prevent blue highlighting */
+        
+        .feedback {
+            padding: clamp(12px, 2.5vw, 16px);
+            border-radius: 12px;
+            margin-bottom: clamp(10px, 2vw, 16px);
+            display: none;
+            align-items: center;
+            gap: clamp(8px, 1.5vw, 12px);
+            font-weight: 500;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            display: flex;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+            display: flex;
+        }
+        
+        .feedback-icon {
+            font-size: clamp(1.2rem, 3vw, 1.4rem);
+            flex-shrink: 0;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(12px, 2.5vw, 16px) clamp(16px, 3vw, 24px);
+            background: #fff0f0;
+            border-top: 1px solid #ffe0e0;
+            flex-shrink: 0;
+        }
+        
+        .counter {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: clamp(0.85rem, 2vw, 1rem);
+        }
+        
+        .btn {
+            padding: clamp(10px, 2vw, 12px) clamp(15px, 2.5vw, 20px);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 1vw, 8px);
+            font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+            white-space: nowrap;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffb3b3, #ff6b6b);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 179, 179, 0.3);
+        }
+        
+        .rationale {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffd43b;
+            border-radius: 12px;
+            padding: clamp(12px, 2.5vw, 16px);
+            margin-top: clamp(8px, 1.5vw, 12px);
+            display: none;
+        }
+        
+        .rationale.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .rationale h4 {
+            color: #856404;
+            margin-bottom: clamp(6px, 1.2vw, 10px);
+            display: flex;
+            align-items: center;
+            gap: clamp(6px, 1.2vw, 8px);
+            font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+        }
+        
+        .rationale p {
+            color: #856404;
+            line-height: 1.6;
+            font-size: clamp(0.8rem, 1.8vw, 0.95rem);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stats {
+            display: flex;
+            gap: clamp(8px, 1.5vw, 15px);
+            justify-content: center;
+            margin-top: clamp(4px, 1vw, 10px);
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            background: rgba(255,255,255,0.2);
+            padding: clamp(5px, 1vw, 6px) clamp(8px, 1.8vw, 12px);
+            border-radius: 20px;
+            font-size: clamp(0.7rem, 1.6vw, 0.85rem);
+            white-space: nowrap;
+        }
+        
+        /* Cancel selection button */
+        .cancel-selection {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            margin: 0 auto clamp(10px, 2vw, 15px) auto;
+            display: none;
+        }
+        
+        .cancel-selection:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 107, 107, 0.3);
+        }
+        
+        .cancel-selection.show {
+            display: flex;
+        }
+        
+        /* Study mode controls */
+        .study-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .study-btn {
+            padding: 8px 16px;
+            border: 2px solid #ff6b6b;
+            background: white;
+            color: #ff6b6b;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .study-btn.active {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .study-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 107, 107, 0.2);
+        }
+        
+        /* Multiple select instructions */
+        .multiple-select-instructions {
+            text-align: center;
+            color: #ff6b6b;
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        /* Fill in the blank styling */
+        .fill-blank {
+            background: #f8f9fa;
+            border: 2px dashed #ff6b6b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .fill-blank input {
+            border: 2px solid #ff6b6b;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 1rem;
+            width: 80px;
+            text-align: center;
+            margin: 0 5px;
+        }
+        
+        .fill-blank button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦠 Sexually Transmitted Infections</h1>
+            <div class="subtitle">Chapter 5 - 30 Questions | Multiple-Select Enabled</div>
+            <div class="stats">
+                <div class="stat">🎯 30 Questions</div>
+                <div class="stat">📖 Detailed Rationales</div>
+                <div class="stat">🔢 6 Multiple-Answer Questions</div>
+                <div class="stat">↩️ Cancel Wrong Answers</div>
+            </div>
+        </div>
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <div class="flashcard">
+            <div class="study-controls">
+                <button class="study-btn active" id="allQuestionsBtn" onclick="setStudyMode('all')">All Questions</button>
+                <button class="study-btn" id="multipleSelectBtn" onclick="setStudyMode('multiple')">Multiple-Select Only</button>
+                <button class="study-btn" id="singleSelectBtn" onclick="setStudyMode('single')">Single-Select Only</button>
+                <button class="study-btn" id="incorrectBtn" onclick="setStudyMode('incorrect')">Review Incorrect</button>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-icon">?</div>
+                <div class="question" id="question"></div>
+                <div class="multiple-select-indicator" id="multipleSelectIndicator" style="display: none;">Multiple Answers</div>
+            </div>
+            
+            <div class="multiple-select-instructions" id="multipleSelectInstructions" style="display: none;">
+                💡 Select ALL correct answers - This question has multiple correct options
+            </div>
+            
+            <div class="options" id="options"></div>
+            
+            <!-- Fill in the blank section (only shown for question 25) -->
+            <div class="fill-blank" id="fillBlankSection" style="display: none;">
+                <p>Enter your answer:</p>
+                <input type="number" id="fillBlankInput" min="0">
+                <button onclick="checkFillBlankAnswer()">Submit</button>
+            </div>
+            
+            <!-- Cancel Selection Button - Only shows for wrong answers -->
+            <button class="btn cancel-selection" id="cancelBtn" onclick="cancelSelection()">
+                ↩️ Cancel Selection
+            </button>
+            
+            <div class="feedback" id="feedback">
+                <div class="feedback-icon" id="feedbackIcon"></div>
+                <div id="feedbackText"></div>
+            </div>
+            <div class="rationale" id="rationale">
+                <h4>💡 Rationale:</h4>
+                <p id="rationaleText"></p>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button class="btn btn-secondary" id="prevBtn" onclick="previousCard()">
+                ⬅️ Previous
+            </button>
+            <div class="counter" id="counter">1/30</div>
+            <button class="btn btn-primary" id="nextBtn" onclick="nextCard()">
+                Next ➡️
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "1. The nurse is developing a plan of care for a client who is receiving aggressive drug therapy for treatment of HIV. The goal of this therapy is to:",
+                options: [
+                    "promote the progression of disease.",
+                    "intervene in late-stage AIDS.",
+                    "improve survival rates.",
+                    "conduct additional drug research."
+                ],
+                correct: 2,
+                rationale: "Aggressive anti-retroviral therapy aims to reduce HIV morbidity and mortality, thereby improving survival rates. Drug therapy also aims to decrease the HIV viral load, restore the body's ability to fight off infection, and improve the quality of life. Drug therapy does not promote the progression of the disease. It is started at the time of the first infection, not in late stage AIDS. Treatment advances have been based on research, but drug therapy is not prescribed to conduct additional research."
+            },
+            {
+                question: "2. A young adult woman who is HIV-positive is receiving anti-retroviral therapy (ART) and is having difficulty with adherence. To promote adherence, which area would be most important for the nurse to assess?",
+                options: [
+                    "beliefs and education",
+                    "financial situation and insurance",
+                    "activity level and nutrition",
+                    "family and living arrangements"
+                ],
+                correct: 0,
+                rationale: "The most important area to assess initially would be the client's beliefs and knowledge about the disease and its treatment. A common barrier is a lack of understanding about the link between drug resistance and nonadherence. Once this area is assessed, the nurse can assess for other barriers, such as finances and insurance, nutrition and activity level, and family issues, including living arrangements (for example, the client may be afraid that his or her HIV status would be revealed if others see the client taking medication)."
+            },
+            {
+                question: "3. When developing a teaching plan for a community group about HIV infection, which group would the nurse identify being most vulnerable for HIV infection?",
+                options: [
+                    "Native American/First Nations people",
+                    "heterosexual women",
+                    "new health care workers",
+                    "Asian immigrants"
+                ],
+                correct: 1,
+                rationale: "The number of women with HIV infection and AIDS has been increasing steadily worldwide. Today, women account for one in four (25%) new HIV infections in the United States. Women of color have been especially hard hit and represent the majority of women living with the disease and newly infected ones. African American women suffer disproportionately from the HIV/AIDS epidemic. New health care workers, Native American/First Nations members, and Asian immigrants are not among those considered at high risk."
+            },
+            {
+                question: "4. After teaching a group of adolescents about HIV, the nurse asks them to identify the primary means by which adolescents are exposed to the virus. The nurse determines that the teaching was successful when the group identifies which means of exposure?",
+                options: [
+                    "sexual intercourse",
+                    "sharing needles for IV drug use",
+                    "perinatal transmission",
+                    "blood transfusion"
+                ],
+                correct: 0,
+                rationale: "HIV infections are increasing in adolescents and young adults aged 13 to 24 years predominantly trasmitted by sexual intercourse. Millions of US adolescents between the ages of 10 and 19 are living with HIV, and many do not receive the care and support they need to stay in good health. This is particularly significant because the risk of HIV transmission increases substantially if either partner is infected with an STI. Sharing of needles, perinatal transmission, and blood transfusions are less often means of transmission in adolescents."
+            },
+            {
+                question: "5. The nurse reviews the CD4 cell count of a client who is HIV-positive. A result less than which count would indicate to the nurse that the client has AIDS?",
+                options: [
+                    "1,000 cells/mm3",
+                    "700 cells/mm3",
+                    "450 cells/mm3",
+                    "200 cells/mm3"
+                ],
+                correct: 3,
+                rationale: "When the CD4 T-cell count reaches 200 or less, the person has reached the stage of AIDS per the CDC. A CD4 T-cell count between 450 and 1,200 is considered normal."
+            },
+            {
+                question: "6. When obtaining the health history from an adolescent client, which factor would lead the nurse to suspect that the client has an increased risk for sexually transmitted infections (STIs)?",
+                options: [
+                    "hive-like rash for the past 2 days",
+                    "five different sexual partners",
+                    "weight gain of 5 lb (2.3 kg) in 1 year",
+                    "clear vaginal discharge"
+                ],
+                correct: 1,
+                rationale: "The number of sexual partners is a risk factor for the development of STIs. A rash could be related to numerous underlying conditions. A weight gain of 5 lb (2.3 kg) in 1 year is not a factor increasing one's risk for STIs. A change in the color of vaginal discharge such as yellow, milky, or curd-like, not clear, would suggest an STI."
+            },
+            {
+                question: "7. Assessment of a female client reveals a thick, white vaginal discharge. The client also reports intense itching and dyspareunia. Based on these findings, the nurse would suspect that the client has:",
+                options: [
+                    "trichomoniasis.",
+                    "bacterial vaginosis.",
+                    "candidiasis.",
+                    "genital herpes simplex."
+                ],
+                correct: 2,
+                rationale: "A thick, white vaginal discharge accompanied by intense itching and dyspareunia suggest vulvovaginal candidiasis. Trichomoniasis is characterized by a heavy yellow, green, or gray frothy or bubbly discharge. Bacterial vaginosis is manifested by a thin, white homogenous vaginal discharge with a characteristic stale fish-like odor. Genital herpes simplex involves genital ulcers."
+            },
+            {
+                question: "8. A client with trichomoniasis is to receive metronidazole. What should the nurse instruct the client to avoid while taking this drug?",
+                options: [
+                    "alcohol",
+                    "nicotine",
+                    "chocolate",
+                    "caffeine"
+                ],
+                correct: 0,
+                rationale: "The client should be instructed to avoid consuming alcohol when taking metronidazole because severe nausea and vomiting could occur. There is no need to avoid nicotine, chocolate, or caffeine when taking metronidazole."
+            },
+            {
+                question: "9. Which finding would the nurse expect in a client with bacterial vaginosis?",
+                options: [
+                    "vaginal pH of 3",
+                    "fish-like odor of discharge",
+                    "yellowish-green discharge",
+                    "cervical bleeding on contact"
+                ],
+                correct: 1,
+                rationale: "Manifestations of bacterial vaginosis include a thin, white, homogenous vaginal discharge with a characteristic stale fishy odor, vaginal pH greater than 4.5, and clue cells on wet-mount examination. A yellowish-green discharge with cervical bleeding on contact would be characteristic of trichomoniasis."
+            },
+            {
+                question: "10. A pregnant woman diagnosed with syphilis comes to the clinic for a visit. The nurse discusses the risk of transmitting the infection to her newborn, explaining that this infection is transmitted to the newborn through the:",
+                options: [
+                    "amniotic fluid.",
+                    "placenta.",
+                    "birth canal.",
+                    "breast milk."
+                ],
+                correct: 1,
+                rationale: "The syphilis spirochete can cross the placenta after 9 weeks gestation. It is not transmitted via amniotic fluid, passage through the birth canal, or breast milk."
+            },
+            {
+                question: "11. The nurse encourages a female client with human papillomavirus (HPV) to receive continued follow-up care because she is at risk for:",
+                options: [
+                    "infertility.",
+                    "dyspareunia.",
+                    "cervical cancer.",
+                    "dysmenorrhea."
+                ],
+                correct: 2,
+                rationale: "Clinical studies have confirmed that HPV is the cause of essentially all cases of cervical cancer. Therefore, the client needs continued follow-up for routine Papanicolaou testing. HPV is not associated with an increased risk for infertility, dyspareunia, or dysmenorrhea."
+            },
+            {
+                question: "12. Which instructions would the nurse include when teaching a woman with pediculosis pubis?",
+                options: [
+                    "\"Take the antibiotic until you feel better.\"",
+                    "\"Wash your bed linens in bleach and cold water.\"",
+                    "\"Your partner doesn't need treatment at this time.\"",
+                    "\"Remove the nits with a fine-toothed comb.\""
+                ],
+                correct: 3,
+                rationale: "The nurse should instruct the client to remove the nits from the hair using a fine toothed comb. Permethrin cream and lindane shampoo are used as treatment, not antibiotics. Bedding and clothing should be washed in hot water to decontaminate it. Sexual partners should also be treated, as well as family members who live in close contact with the infected person."
+            },
+            {
+                question: "13. A client with genital herpes simplex infection asks the nurse, \"Will I ever be cured of this infection?\" Which response by the nurse would be most appropriate?",
+                options: [
+                    "\"There is a new vaccine available that prevents the infection from returning.\"",
+                    "\"All you need is a dose of penicillin and the infection will be gone.\"",
+                    "\"There is no cure, but drug therapy helps to reduce symptoms and recurrences.\"",
+                    "\"Once you have the infection, you develop an immunity to it.\""
+                ],
+                correct: 2,
+                rationale: "Genital herpes is a lifelong viral infection. No cure exists, but antiviral drug therapy helps to reduce or suppress symptoms, shedding, and recurrent episodes. A vaccine is available for HPV infection but not genital herpes. Penicillin is used to treat syphilis. No immunity develops after a genital herpes infection."
+            },
+            {
+                question: "14. A woman gives birth to a healthy newborn. As part of the newborn's care, the nurse instills erythromycin ophthalmic ointment as a preventive measure for which sexually transmitted infection (STI)?",
+                options: [
+                    "genital herpes",
+                    "hepatitis B",
+                    "syphilis",
+                    "gonorrhea"
+                ],
+                correct: 3,
+                rationale: "To prevent gonococcal ophthalmia neonatorum, erythromycin or tetracycline ophthalmic ointment is instilled into the eyes of all newborns. This action is required by law in most states. The ointment is not used to prevent conditions related to genital herpes, hepatitis B, or syphilis."
+            },
+            {
+                question: "15. While obtaining a health history from a male adolescent during a well checkup, the nurse assesses his sexual behavior and risk for sexually transmitted infections. Based on the information, the nurse plans to teach the adolescent about using a condom. What statement would the nurse include in the teaching plan?",
+                options: [
+                    "\"You can reuse a condom if it's within 3 hours.\"",
+                    "\"Store your condoms in your wallet so they are ready for use.\"",
+                    "\"Put the condom on before engaging in any genital contact.\"",
+                    "\"Use petroleum jelly with a latex condom for extra lubrication.\""
+                ],
+                correct: 2,
+                rationale: "When teaching an adolescent about condom use, the nurse should tell the adolescent to put the condom on before any genital contact. A new condom should be used with each act of sexual intercourse; a condom should never be reused. Condoms should be stored in a cool, dry place away from direct sunlight and never stored in wallets, automobiles, or anywhere they could be exposed to extreme temperatures. Only water-soluble lubricants should be used with latex condoms. Oil-based or petroleum-based lubricants can weaken latex condoms."
+            },
+            {
+                question: "16. An female adolescent is diagnosed with gonorrhea. When developing the plan of care for this adolescent, the nurse would expect that she would also receive treatment for:",
+                options: [
+                    "chlamydia.",
+                    "syphilis.",
+                    "genital herpes.",
+                    "trichomoniasis."
+                ],
+                correct: 0,
+                rationale: "Clients with gonorrhea usually receive treatment for chlamydia as well because they often are coinfected. Coinfection with syphilis, genital herpes, or trichomoniasis is uncommon."
+            },
+            {
+                question: "17. A client is admitted in the health care facility with pelvic inflammatory disease (PID). When reviewing the client's history, what would the nurse identify as a risk factor?",
+                options: [
+                    "gestational diabetes",
+                    "frequent douching",
+                    "genetic predisposition",
+                    "environmental exposure"
+                ],
+                correct: 1,
+                rationale: "One of the risk factors associated with pelvic inflammatory disease is frequent douching. Women with gestational diabetes are at an increased risk for developing type 2 diabetes later in life. Genetic predisposition and environmental exposure are risk factors associated with breast cancer."
+            },
+            {
+                question: "18. A 40-year-old woman is being discharged from the walk-in health care clinic after a diagnosis of pelvic inflammatory disease. Which health teaching topic should the nurse address?",
+                options: [
+                    "symptoms of menopause",
+                    "pain control for endometriosis",
+                    "fertility issues",
+                    "sexually transmitted infections"
+                ],
+                correct: 3,
+                rationale: "STIs are responsible for genital tract infections that may lead to later complications in women such as pelvic inflammatory disease (PID). The other topics do not relate to PID."
+            },
+            {
+                question: "19. A public health nurse is teaching a class on sexually transmitted infections (STIs). Which statements would the nurse include in the discussion? Select all that apply.",
+                options: [
+                    "\"65 million people live with incurable STIs.\"",
+                    "\"STIs are biologically sexist causing more complications among men.\"",
+                    "\"After a single exposure, women are twice as likely as men to acquire a STI.\"",
+                    "\"STIs contribute to cervical cancer.\"",
+                    "\"STIs cannot be transmitted to the fetus or infant during childbirth.\""
+                ],
+                correct: [0, 2, 3],
+                rationale: "An estimated 65 million people live with an incurable STI. STIs are biologically sexist, presenting greater risk and causing more complications among women than among men. After only a single exposure, women are twice as likely as men to acquire infections. STIs may contribute to cervical cancer. Certain infections can be transmitted in utero to the fetus or during childbirth to the newborn."
+            },
+            {
+                question: "20. A pregnant woman is diagnosed with chlamydia and asks the nurse, \"How will this infection affect my baby and pregnancy?\" Which responses by the nurse are accurate? Select all that apply.",
+                options: [
+                    "\"Your newborn can be infected during birth.\"",
+                    "\"Your newborn may have eye infections from this infection.\"",
+                    "\"Your membranes may rupture earlier than normal.\"",
+                    "\"Your newborn is protected from this infection.\"",
+                    "\"It will not have any effect on your pregnancy.\""
+                ],
+                correct: [0, 1, 2],
+                rationale: "STIs' effects on the fetus or newborn such as chlamydia include the newborn being infected during birth with eye infections (neonatal conjunctivitis), pneumonia, low birth weight, increased risk of premature rupture of the membranes (PROM), preterm birth, and stillbirth."
+            },
+            {
+                question: "21. The school public health nurse is teaching a high school class on sexually transmitted infections (STIs). The nurse would include what information in the presentation? Select all that apply.",
+                options: [
+                    "Fifteen- to twenty-four-year-olds represent almost half of all cases of new STIs.",
+                    "Two in five sexually active teen girls have an STI.",
+                    "Adolescent females make up more than three-quarters of HIV diagnoses.",
+                    "Teens who are sexually active experience high rates of STIs.",
+                    "All groups of teens are at the same risk.",
+                    "Adolescent males make up more than four-fifths of HIV diagnosis."
+                ],
+                correct: [0, 1, 3, 5],
+                rationale: "Individuals aged 15 to 24 years represent almost half of all cases of new STIs acquired. Two in five sexually active teen girls have a STI. Adolescent males make up more than three-quarters of HIV diagnoses among 13- to 19-year-olds. In the United States, teens who are sexually active experience high rates of STIs, and some groups are at higher risk, including African American and Hispanic youths, youths living in poverty, and those with limited educational attainment."
+            },
+            {
+                question: "22. A sexual health public health nurse is presenting information on sexually transmitted infections (STIs) to adolescent girls and is asked, \"Why are females more at risk for STIs?\" Which statements by the nurse would best answer this question? Select all that apply.",
+                options: [
+                    "\"Teenage females have sex as they feel they have power to control the sex act.\"",
+                    "\"Teenage females lack communication skills to negotiate for safer sex.\"",
+                    "\"The teenage female anatomy is mature, leaving them more susceptible to STIs.\"",
+                    "\"The female genital tract makes you more sensitive to specific STI organisms.\"",
+                    "\"Teenage girls are more susceptible to STIs due to their genital anatomy.\""
+                ],
+                correct: [1, 3, 4],
+                rationale: "Female adolescents are more susceptible to STIs due to their anatomy. During adolescence and young adulthood, women's columnar epithelial cells are especially sensitive to invasion by sexually transmitted organisms, such as chlamydia and gonococci. Adolescent females may perceive that they have limited power over when and where intercourse occurs with their partners. They typically lack negotiating skills and self-confidence needed to successfully negotiate for safer sex practices and thus are exposed to STIs."
+            },
+            {
+                question: "23. The sexual health nurse is presenting to a group of adolescents the government initiative that proposes to reduce the numbers of adolescents with sexually transmitted infections (STIs). What is the name of this initiative?",
+                options: [
+                    "Health For All",
+                    "Healthy People 2030",
+                    "Onward to Health",
+                    "Healthy Communities 2030"
+                ],
+                correct: 1,
+                rationale: "Healthy People 2030 proposes to reduce the proportion of adolescents and young adults with STIs. It also proposes to increase the proportion of sexually active persons aged 15 to 19 years who use condoms."
+            },
+            {
+                question: "24. A sex trade worker is seen at the sexual health clinic reporting dysuria, mucopurulent vaginal discharge with bleeding between periods, conjunctivitis, and a painful rectal area. What sexually transmitted infection would the nurse suspect?",
+                options: [
+                    "syphilis",
+                    "chlamydia",
+                    "genital herpes",
+                    "gonorrhea"
+                ],
+                correct: 1,
+                rationale: "Chlamydial symptoms include dysuria, mucopurulent vaginal discharge, and dysfunctional uterine bleeding. It can cause inflammation of the rectum and conjunctiva. Syphilis starts with a chancre on vulva or vagina but can develop in other parts of the body. Secondary infection is maculopapular rash on hands and feet with a sore throat. Genital herpes symptoms include itching, tingling, and pain in genital area followed by small pustules and blister-like genital lesions. Gonorrhea vaginal discharge is yellowish color and very foul smelling."
+            },
+            {
+                question: "25. A client is to receive 3 million units of penicillin G intramuscular to treat gonorrhea. The drug is available in 1,500,000 units/mL. How many milliliters should the nurse administer? Record your answer using a whole number.",
+                options: [],
+                correct: 2,
+                rationale: "Formula of D/H X V 3,000,00/1,500,000 X 1 mL = 2 mL",
+                type: "fillBlank"
+            },
+            {
+                question: "26. What is the most important consideration for the nurse when communicating with an adolescent about sexually transmitted infections (STI)?",
+                options: [
+                    "Adjust information to the client's developmental level",
+                    "Use communication techniques that are direct and nonjudgmental",
+                    "Utilize audio and visual aids to reinforce teaching",
+                    "Design teaching for the best effect in the shortest time"
+                ],
+                correct: 1,
+                rationale: "All of the answers are correct, but the most important consideration for a nurse communicating with an adolescent about STIs is to be direct and nonjudgmental. The style, content, and the message has to be aimed at the adolescent's developmental level. Any aids to help the adolescent learn should be used. The content should be designed to be delivered in the shortest amount of time because many clinics and health care provider offices are busy and do not lend themselves to long class times."
+            },
+            {
+                question: "27. A woman has been diagnosed with trichomoniasis and asks the nurse when it would be safe to resume sexual activity. How should the nurse respond?",
+                options: [
+                    "\"After treatment you must be symptom free to resume sexual activity.\"",
+                    "\"You may resume sexual activity after you and your partner have been treated.\"",
+                    "\"You and your partner must wait 10 days after you complete your treatment regimen.\"",
+                    "\"When you have taken your medication and no longer have any discharge, then sexual activity is fine.\""
+                ],
+                correct: 0,
+                rationale: "Trichomoniasis is the most prevalent nonviral sexually transmitted infection. It is treated with metronidazole, usually a single 2-gram dose. For treatment to be effective all sexual partners of the client need to be treated. Sexual activity can resume after the partners have been treated and both the woman and partner are symptom free. There is no timeline for this to occur and treatment will not be effective if both the woman and her partner are not treated. The infection will reoccur."
+            },
+            {
+                question: "28. A woman has been prescribed doxycycline to treat a chlamydia infection. What instruction(s) should the nurse give this client? Select all that apply.",
+                options: [
+                    "\"You must take all the 7 days of the medication.\"",
+                    "\"You will need to be retested after you complete the medication.\"",
+                    "\"If the symptoms do not go away after the medication, you will need to return to the health care provider.\"",
+                    "\"If you suspect you have another infection, you need to see the health care provider right away.\"",
+                    "\"You will need to have a pregnancy test before starting the medication.\""
+                ],
+                correct: [0, 2, 3],
+                rationale: "Doxycycline belongs to the classification of tetracyclines. It is useful in the treatment of many types of infections and specifically chlamydia. The drug is given twice a day for 7 days. It is contraindicated with a known hypersensitivity to the drug. The medication may be taken during pregnancy. The client needs to be retested only if it is suspected or known the client did not complete the medication, if symptoms persist or if a reinfection is suspected. The client needs to return to the health care provider if treatment has been completed and symptoms persist. It is recommended for women to be screened annually for this infection."
+            },
+            {
+                question: "29. A woman is diagnosed with gonorrhea. The client asks why she needs to take two medications. How should the nurse respond? Select all that apply.",
+                options: [
+                    "\"The medicines are needed to kill the bacteria causing the infection.\"",
+                    "\"The medications help prevent the spread of the bacteria to your female organs.\"",
+                    "\"Taking two medications will cure the infection faster.\"",
+                    "\"The bacteria causing the infection is very strong, so two medications are needed.\"",
+                    "\"The medications will stop the bacteria before it can cause complications.\""
+                ],
+                correct: [0, 1, 4],
+                rationale: "The antibiotic treatment for gonorrhea is a dual therapy with azithromycin and ceftriaxone. Dual therapy is recommended to prevent drug resistance and it is also effective against chlamydia. If left untreated or not treated adequately, gonorrhea can cause infertility, pelvic inflammatory disease, and ectopic pregnancy. The medications can cure the infection and help prevent spread to the pelvic organs. Taking two medications does not kill the bacteria faster nor is the bacteria so strong two medications are needed."
+            },
+            {
+                question: "30. A client has been diagnosed and treated for primary syphilis. What instruction should the nurse give this client about follow-up testing?",
+                options: [
+                    "\"You will need to be retested again in 6 months.\"",
+                    "\"You also will need to be tested for HIV in 6 months.\"",
+                    "\"You do not need to be retested after treatment unless symptoms develop.\"",
+                    "\"You need to retested if you have a new sexual partner.\""
+                ],
+                correct: 0,
+                rationale: "For the client treated for primary or secondary syphilis, retesting needs to occur at 6 months and at 12 months. If the client was treated for latent syphilis, then testing needs to be done at 6 months, 12 months, and 24 months. For latent syphilis, the testing also needs to include testing for HIV. The client does not to be retested if there is a new sexual partner, but the client should be instructed in safer sex methods to prevent a sexually transmitted infection."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedOption = null;
+        let score = 0;
+        let answers = Array(questions.length).fill(null);
+        let incorrectQuestions = [];
+        let studyMode = 'all'; // 'all', 'multiple', 'single', 'incorrect'
+        let filteredQuestions = [...questions];
+
+        function setStudyMode(mode) {
+            studyMode = mode;
+            
+            // Update button states
+            document.querySelectorAll('.study-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(mode + 'Btn').classList.add('active');
+            
+            // Filter questions based on mode
+            switch(mode) {
+                case 'all':
+                    filteredQuestions = [...questions];
+                    break;
+                case 'multiple':
+                    filteredQuestions = questions.filter(q => Array.isArray(q.correct) && q.correct.length > 1);
+                    break;
+                case 'single':
+                    filteredQuestions = questions.filter(q => !Array.isArray(q.correct) || q.correct.length === 1);
+                    break;
+                case 'incorrect':
+                    filteredQuestions = questions.filter((_, index) => incorrectQuestions.includes(index));
+                    if (filteredQuestions.length === 0) {
+                        alert('No incorrect questions to review yet!');
+                        filteredQuestions = [...questions];
+                    }
+                    break;
+            }
+            
+            currentQuestion = 0;
+            loadQuestion();
+        }
+
+        function isMultipleSelectQuestion(question) {
+            return Array.isArray(question.correct) && question.correct.length > 1;
+        }
+
+        function isFillBlankQuestion(question) {
+            return question.type === "fillBlank";
+        }
+
+        function loadQuestion() {
+            if (filteredQuestions.length === 0) {
+                document.getElementById('question').textContent = "No questions available for the selected study mode.";
+                document.getElementById('options').innerHTML = '';
+                document.getElementById('counter').textContent = `0/0`;
+                return;
+            }
+
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            document.getElementById('question').textContent = question.question;
+            document.getElementById('counter').textContent = `${currentQuestion + 1}/${filteredQuestions.length}`;
+            
+            // Update progress bar
+            const progress = ((currentQuestion + 1) / filteredQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Show/hide multiple select indicators
+            const isMultiple = isMultipleSelectQuestion(question);
+            document.getElementById('multipleSelectIndicator').style.display = isMultiple ? 'block' : 'none';
+            document.getElementById('multipleSelectInstructions').style.display = isMultiple ? 'block' : 'none';
+            
+            // Show/hide fill blank section
+            const isFillBlank = isFillBlankQuestion(question);
+            document.getElementById('fillBlankSection').style.display = isFillBlank ? 'block' : 'none';
+            document.getElementById('options').style.display = isFillBlank ? 'none' : 'block';
+            
+            // Load options (if not fill in the blank)
+            if (!isFillBlank) {
+                const optionsContainer = document.getElementById('options');
+                optionsContainer.innerHTML = '';
+                
+                question.options.forEach((option, index) => {
+                    const optionElement = document.createElement('div');
+                    optionElement.className = 'option';
+                    optionElement.innerHTML = `
+                        <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                        <div class="option-text">${option}</div>
+                    `;
+                    optionElement.onclick = () => selectOption(index);
+                    optionsContainer.appendChild(optionElement);
+                });
+            }
+            
+            // Reset feedback and rationale
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('rationale').className = 'rationale';
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === filteredQuestions.length - 1 ? 'Finish ➡️' : 'Next ➡️';
+            
+            // Check if we have a stored answer for this question
+            const storedAnswer = answers[originalIndex];
+            document.getElementById('nextBtn').disabled = storedAnswer === null || storedAnswer === undefined;
+            
+            // Reset cancel button visibility
+            document.getElementById('cancelBtn').classList.remove('show');
+            
+            // If this question was already answered, show the answer
+            if (storedAnswer !== null && storedAnswer !== undefined) {
+                if (Array.isArray(storedAnswer)) {
+                    // Multiple selection question
+                    storedAnswer.forEach(index => {
+                        selectOption(index, true);
+                    });
+                } else {
+                    // Single selection question
+                    selectOption(storedAnswer, true);
+                }
+            }
+        }
+
+        function selectOption(index, fromMemory = false) {
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            // Check if this is a multiple selection question
+            if (isMultipleSelectQuestion(question)) {
+                // Multiple selection logic
+                if (!fromMemory) {
+                    if (!answers[originalIndex]) {
+                        answers[originalIndex] = [];
+                    }
+                    
+                    const optionIndex = answers[originalIndex].indexOf(index);
+                    if (optionIndex === -1) {
+                        answers[originalIndex].push(index);
+                    } else {
+                        answers[originalIndex].splice(optionIndex, 1);
+                    }
+                }
+                
+                highlightSelectedOptions();
+                showFeedbackForMultiple();
+                
+                // Enable next button if at least one option is selected
+                document.getElementById('nextBtn').disabled = !answers[originalIndex] || answers[originalIndex].length === 0;
+                return;
+            }
+            
+            // Single selection logic
+            if (selectedOption !== null && !fromMemory) return;
+            
+            if (!fromMemory) {
+                selectedOption = index;
+                answers[originalIndex] = index;
+            }
+            
+            highlightSelectedOption(index);
+            showFeedback(index);
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function checkFillBlankAnswer() {
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            const userAnswer = parseInt(document.getElementById('fillBlankInput').value);
+            
+            if (isNaN(userAnswer)) {
+                alert("Please enter a number");
+                return;
+            }
+            
+            answers[originalIndex] = userAnswer;
+            
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackText = document.getElementById('feedbackText');
+            const rationale = document.getElementById('rationale');
+            const rationaleText = document.getElementById('rationaleText');
+            
+            if (userAnswer === question.correct) {
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct! Well done.';
+                if (!answers[originalIndex]) score++;
+                
+                // Remove from incorrect questions if it was there
+                const incorrectIndex = incorrectQuestions.indexOf(originalIndex);
+                if (incorrectIndex > -1) {
+                    incorrectQuestions.splice(incorrectIndex, 1);
+                }
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '❌';
+                feedbackText.textContent = `Incorrect. The right answer is: ${question.correct}`;
+                document.getElementById('cancelBtn').classList.add('show');
+                
+                // Add to incorrect questions
+                if (!incorrectQuestions.includes(originalIndex)) {
+                    incorrectQuestions.push(originalIndex);
+                }
+            }
+            
+            feedback.style.display = 'flex';
+            rationaleText.textContent = question.rationale;
+            rationale.classList.add('show');
+            
+            // Enable next button
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function highlightSelectedOption(index) {
+            const options = document.querySelectorAll('.option');
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            options.forEach((option, i) => {
+                option.classList.remove('correct', 'incorrect');
+                
+                if (i === index) {
+                    // ALWAYS show correct answers in GREEN
+                    if (i === question.correct) {
+                        option.classList.add('correct');
+                        if (!answers[originalIndex]) score++;
+                        document.getElementById('cancelBtn').classList.remove('show');
+                        
+                        // Remove from incorrect questions if it was there
+                        const incorrectIndex = incorrectQuestions.indexOf(originalIndex);
+                        if (incorrectIndex > -1) {
+                            incorrectQuestions.splice(incorrectIndex, 1);
+                        }
+                    } else {
+                        // ALWAYS show incorrect answers in RED
+                        option.classList.add('incorrect');
+                        // Also highlight the correct answer in GREEN
+                        options[question.correct].classList.add('correct');
+                        document.getElementById('cancelBtn').classList.add('show');
+                        
+                        // Add to incorrect questions
+                        if (!incorrectQuestions.includes(originalIndex)) {
+                            incorrectQuestions.push(originalIndex);
+                        }
+                    }
+                }
+            });
+        }
+
+        function highlightSelectedOptions() {
+            const options = document.querySelectorAll('.option');
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            const selectedIndices = answers[originalIndex] || [];
+            
+            // First, highlight ALL correct answers in GREEN
+            question.correct.forEach(correctIndex => {
+                options[correctIndex].classList.add('correct');
+            });
+            
+            // Then, highlight selected options
+            options.forEach((option, i) => {
+                if (selectedIndices.includes(i)) {
+                    // If selected but incorrect, highlight in RED
+                    if (!question.correct.includes(i)) {
+                        option.classList.add('incorrect');
+                    }
+                }
+            });
+            
+            // Check if answer is correct and update score/tracking
+            const allCorrectSelected = question.correct.every(c => selectedIndices.includes(c));
+            const noIncorrectSelected = selectedIndices.every(s => question.correct.includes(s));
+            
+            if (allCorrectSelected && noIncorrectSelected) {
+                if (!answers[originalIndex]) score++;
+                // Remove from incorrect questions
+                const incorrectIndex = incorrectQuestions.indexOf(originalIndex);
+                if (incorrectIndex > -1) {
+                    incorrectQuestions.splice(incorrectIndex, 1);
+                }
+            } else {
+                // Add to incorrect questions
+                if (!incorrectQuestions.includes(originalIndex)) {
+                    incorrectQuestions.push(originalIndex);
+                }
+            }
+        }
+
+        function cancelSelection() {
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            
+            selectedOption = null;
+            answers[originalIndex] = null;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('rationale').classList.remove('show');
+            document.getElementById('cancelBtn').classList.remove('show');
+            document.getElementById('nextBtn').disabled = true;
+        }
+
+        function showFeedback(index) {
+            const question = filteredQuestions[currentQuestion];
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackText = document.getElementById('feedbackText');
+            const rationale = document.getElementById('rationale');
+            const rationaleText = document.getElementById('rationaleText');
+            
+            if (index === question.correct) {
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct! Well done.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '❌';
+                feedbackText.textContent = `Incorrect. The right answer is: ${String.fromCharCode(65 + question.correct)}`;
+            }
+            
+            feedback.style.display = 'flex';
+            rationaleText.textContent = question.rationale;
+            rationale.classList.add('show');
+        }
+
+        function showFeedbackForMultiple() {
+            const question = filteredQuestions[currentQuestion];
+            const originalIndex = questions.indexOf(question);
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackText = document.getElementById('feedbackText');
+            const rationale = document.getElementById('rationale');
+            const rationaleText = document.getElementById('rationaleText');
+            
+            const selectedIndices = answers[originalIndex] || [];
+            const allCorrectSelected = question.correct.every(c => selectedIndices.includes(c));
+            const noIncorrectSelected = selectedIndices.every(s => question.correct.includes(s));
+            
+            if (allCorrectSelected && noIncorrectSelected) {
+                feedback.className = 'feedback correct';
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct! All right answers selected.';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackIcon.textContent = '❌';
+                const correctLetters = question.correct.map(c => String.fromCharCode(65 + c)).join(', ');
+                feedbackText.textContent = `Incorrect. The right answers are: ${correctLetters}`;
+            }
+            
+            feedback.style.display = 'flex';
+            rationaleText.textContent = question.rationale;
+            rationale.classList.add('show');
+        }
+
+        function nextCard() {
+            if (currentQuestion < filteredQuestions.length - 1) {
+                currentQuestion++;
+                selectedOption = null;
+                loadQuestion();
+            } else {
+                const correctCount = questions.reduce((count, question, index) => {
+                    if (answers[index] === null || answers[index] === undefined) return count;
+                    
+                    if (Array.isArray(question.correct)) {
+                        const selected = answers[index] || [];
+                        const allCorrect = question.correct.every(c => selected.includes(c));
+                        const noIncorrect = selected.every(s => question.correct.includes(s));
+                        return allCorrect && noIncorrect ? count + 1 : count;
+                    } else if (question.type === "fillBlank") {
+                        return answers[index] === question.correct ? count + 1 : count;
+                    } else {
+                        return answers[index] === question.correct ? count + 1 : count;
+                    }
+                }, 0);
+                
+                alert(`Quiz completed! Your score: ${correctCount}/${questions.length}\nIncorrect questions: ${incorrectQuestions.length}`);
+                
+                if (studyMode === 'incorrect' && incorrectQuestions.length > 0) {
+                    // Continue with incorrect questions
+                    filteredQuestions = questions.filter((_, index) => incorrectQuestions.includes(index));
+                    currentQuestion = 0;
+                    loadQuestion();
+                } else {
+                    // Reset to all questions
+                    currentQuestion = 0;
+                    selectedOption = null;
+                    score = 0;
+                    answers = Array(questions.length).fill(null);
+                    filteredQuestions = [...questions];
+                    setStudyMode('all');
+                }
+            }
+        }
+
+        function previousCard() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                const question = filteredQuestions[currentQuestion];
+                const originalIndex = questions.indexOf(question);
+                selectedOption = answers[originalIndex];
+                loadQuestion();
+            }
+        }
+
+        // Initialize the app
+        loadQuestion();
+    </script>
+</body>
+</html>
